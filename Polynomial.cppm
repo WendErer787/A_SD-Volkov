@@ -17,7 +17,67 @@ class Polynomial{
         }
     }
 
+    bool are_equal() {
+        if constexpr (std::is_integral_v<T>) {
+            return a==b;
+        } else {
+            return std::abs(a-b) < static_cast<decltype(std::abs(a-b))>(epsilon);
+        }
+    }
+
     public:
+
+    Polynomial() { }
+
+    ~Polynomial() { delete[] coeffs; }
+
+
+    Polynomial(const Polynomial& other) //копирование
+        : m_coeffs(new T[other.m_capacity]), m_capacity(other.m_capacity) {
+        for (size_t i = 0; i < m_capacity; ++i) {
+            m_coeffs[i] = other.m_coeffs[i];
+        }
+    }
+
+     Polynomial& operator=(const Polynomial& other) {
+        if (this != &other) {
+            T* new_coeffs = new T[other.m_capacity];
+            for (size_t i = 0; i < other.m_capacity; ++i) {
+                new_coeffs[i] = other.m_coeffs[i];
+            }
+            delete[] m_coeffs;
+            m_coeffs = new_coeffs;
+            m_capacity = other.m_capacity;
+        }
+        return *this;
+    }
+
+
+    Polynomial(Polynomial&& other) noexcept //перемещение
+        : m_coeffs(other.m_coeffs), m_capacity(other.m_capacity) {
+        other.m_coeffs = nullptr;
+        other.m_capacity = 0;
+    }
+
+    Polynomial& operator=(Polynomial&& other) noexcept {
+        if (this != &other) {
+            delete[] m_coeffs;
+            m_coeffs = other.m_coeffs;
+            m_capacity = other.m_capacity;
+            other.m_coeffs = nullptr;
+            other.m_capacity = 0;
+        }
+        return *this;
+    }
+
+
+    T operator[](size_t power) const {
+        if (power >= m_capacity) {
+            return T(0);
+        }
+        return m_coeffs[power];
+    }
+
 
    Polynomial operator+ () {
 
@@ -32,9 +92,7 @@ class Polynomial{
     
    }
 
-    Polynomial() { }
-    ~Polynomial() { delete[] coeffs; }
-
+   
     Polynomial(std::size_t max_degree): coeffs(new  T[max_degree+1]()), capasity(max_degree+1) {}
 
     void shrink_to_fit() {
