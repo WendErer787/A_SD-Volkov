@@ -1,3 +1,16 @@
+#include <complex>;
+template <typename T>
+struct RealType{
+    using Type = T;
+};
+
+template <typename T>
+using RealTypeT = typename RealType<T>::Type;
+
+template <typename T>
+struct RealType<std::complex<T>>{
+    using Type = T;
+};
 
 template <typename T>
 
