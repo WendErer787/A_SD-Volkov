@@ -201,6 +201,25 @@ class Polynomial{
         }
         return os;
     }
+
+    void expand(std::size_t new_capacity){
+        if(new_capacity <= _capacity) { return; }
+
+        T* new_coeffs = new T[new_capacity]();
+
+        for (size_t i = 0; i < _capacity; ++i) {
+            new_coeffs[i] = _coeffs[i];
+        }
+        delete[] _coeffs;
+        _coeffs = new_coeffs;
+        _capacity = new_capacity;
+    }
+    void set(std::size_t power, const T& value){
+        if(power >= _capacity){
+            expand(power + 1);
+        }
+        _coeffs[power] = value;
+    }
 };
 
 template <typename T>
