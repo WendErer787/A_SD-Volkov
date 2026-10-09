@@ -17,30 +17,40 @@ template <typename T>
 class Polynomial{
     private:
 
-    T* coeffs;
-    std::size_t capacity;
+    T* _coeffs;
+    std::size_t _capacity;
 
     static constexpr double epsilon = 1e-6;
 
-    bool are_equal(const T& a, const T& b) const {
-        if constexpr(std::is_integral_v<T>) {
-            return a==b;
-        } else{
-            return std::abs(a-b) < epsilon;
-        }
-    }
-
-    bool are_equal() {
-        if constexpr (std::is_integral_v<T>) {
-            return a==b;
-        } else {
-            return std::abs(a-b) < static_cast<decltype(std::abs(a-b))>(epsilon);
-        }
-    }
-
     public:
 
+     bool are_equal(const T& a, const T& b) const {
+        if constexpr(std::is_integral_v<T>) {
+            return a == b;
+        } else{
+            return std::abs(a-b) < static_cast<RealTypeT<T>>(epsilon);
+        }
+    }
+
     Polynomial() { }
+
+    explicit Polynomial(std::size_t max_degree) : _coeffs(new T(max_degree + 1)), _capasity(max_degree + 1) {}
+
+    Polynomial(const T* coeffs, std::size_t size) {
+        if(size == 0){
+            _coeffs = new T[1]();
+            _capasity = 1;
+        } else {
+            if(coeffs == nullptr){
+                throw Std::invalid_argument("Coefficient array is null");
+            }
+            _coeffs = new T[size];
+            _capasity = size;
+            for (int i = 0; i < size; ++i){
+                _coeffs[i] = coeffs[i];
+            }
+        }
+    }
 
     ~Polynomial() { delete[] coeffs; }
 
