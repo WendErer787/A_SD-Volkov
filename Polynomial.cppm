@@ -204,4 +204,21 @@ class Polynomial{
 };
 
 template <typename T>
+Polynomial<T> operator*(const T& scalar, const Polynomial<T>& poly){
+    return poly * scalar;
+}
 
+template <typename T>
+Polynomial<T> compute_derivative(const Polynomial<T>& poly){
+    std::size_t degree = poly.get_degree();
+    if(degree == 0){
+        return Polynomial<T>(0);
+    }
+    Polynomial<T> derivative(degree - 1);
+    for(std::size_t i = 1; i <= degree; ++i){
+        T multiplier = Polynomial<T>::cast_size(i);
+        derivative.set(i - 1, poly[i]*multiplier);
+    }
+    derivative.shrink_to_fit();
+    return derivative;
+}
