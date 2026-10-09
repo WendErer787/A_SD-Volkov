@@ -52,7 +52,16 @@ class Polynomial{
             return;
         }
         std::size_t new_capasity = get_degree + 1;
+        if (new_capasity == _capacity) { return; }
 
+        T* new_coeffs = new T[new_capasity];
+        for (std::size_t i = 0; i < new_capasity; ++i){
+            new_coeffs[i] = _coeffs[i];
+        }
+
+        delete[] _coeffs;
+        _coeffs = new_coeffs;
+        _capacity = new_capasity;
     } 
 
         
@@ -76,6 +85,7 @@ class Polynomial{
                 _coeffs[i] = coeffs[i];
             }
         }
+        shrink_to_fit;
     }
 
     ~Polynomial() { delete[] _coeffs; }
@@ -120,7 +130,7 @@ class Polynomial{
     }
 
 
-    T operator[](size_t power) const {
+    T operator[](std::size_t power) const {
         if (power >= _capacity) {
             return T(0);
         }
@@ -128,17 +138,28 @@ class Polynomial{
     }
 
 
-   Polynomial operator+ () {
+   Polynomial operator+ (const Polynomial& other) {
 
    }
-   Polynomial operator- () {
+   Polynomial operator- (const Polynomial& other) {
 
    }
-   Polynomial operator[] () {
-
-   }
-   Polynomial operator* () {
+   
+   Polynomial operator* (const Polynomial& other) {
     
    }
 
+   bool operator!=(const Polynomial& other) const {
+        return !(*this = other);
+   }
+
+   bool operator==(const Polynomial& other) const {
+        std::size_t max_degree = std::max(get_degree(), other.get_degree());
+        for(std::size_t i = 0; i <= max_degree; ++i){
+            if(!are_equal((*this)[i], other[i])){
+                 return false;
+            }
+        }
+        return true;
+   }
 };
