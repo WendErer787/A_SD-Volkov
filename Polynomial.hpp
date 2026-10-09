@@ -1,4 +1,11 @@
-#include <complex>;
+#include <complex>
+#include <algorithm>
+#include <cmath>
+#include <cstddef>
+#include <iostream>
+#include <stdexcept>
+#include <type_traits>
+
 template <typename T>
 struct RealType{
     using Type = T;
@@ -13,7 +20,6 @@ struct RealType<std::complex<T>>{
 };
 
 template <typename T>
-
 class Polynomial{
     private:
 
@@ -219,6 +225,15 @@ class Polynomial{
             expand(power + 1);
         }
         _coeffs[power] = value;
+    }
+
+    T evaluate(const T& x) const {
+        std::size_t deg = get_degree();
+        T result = (*this)[deg];
+        for (std::size_t i = deg; i > 0; --i) {
+            result = result * x + (*this)[i - 1];
+        }
+        return result;
     }
 };
 
