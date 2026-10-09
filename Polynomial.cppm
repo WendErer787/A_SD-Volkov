@@ -24,7 +24,7 @@ class Polynomial{
 
     public:
 
-     bool are_equal(const T& a, const T& b) const {
+    bool are_equal(const T& a, const T& b) const { //сравнялка коэффициентов
         if constexpr(std::is_integral_v<T>) {
             return a == b;
         } else{
@@ -32,7 +32,33 @@ class Polynomial{
         }
     }
 
-    Polynomial() { }
+    std::size_t get_degree() const { //потск индекса старшего ненулевого члена
+        if(_capacity == 0) {
+            return 0;
+        }
+        for(std::size_t i = _capasity; i > 0; --i){
+            if(!are_equal(_coeffs[i - 1], T(0))){
+                return i - 1;
+            }
+        }
+        return 0;
+    }
+
+    void shrink_to_fit() {
+        if(_capasity == 0){
+            delete[] _coeffs;
+            _coeffs = new T[1];
+            _capasity = 1;
+            return;
+        }
+        std::size_t new_capasity = get_degree + 1;
+
+    } 
+
+        
+    static T cast_size(std::size_t value) { //Т для сайз_т
+        return T(static_cast<RealTypeT<T>>(value));
+    }
 
     explicit Polynomial(std::size_t max_degree) : _coeffs(new T(max_degree + 1)), _capasity(max_degree + 1) {}
 
@@ -52,53 +78,53 @@ class Polynomial{
         }
     }
 
-    ~Polynomial() { delete[] coeffs; }
+    ~Polynomial() { delete[] _coeffs; }
 
 
     Polynomial(const Polynomial& other) //копирование
-        : m_coeffs(new T[other.m_capacity]), m_capacity(other.m_capacity) {
-        for (size_t i = 0; i < m_capacity; ++i) {
-            m_coeffs[i] = other.m_coeffs[i];
+        : m_coeffs(new T[other._capacity]), m_capacity(other._capacity) {
+        for (size_t i = 0; i < _capacity; ++i) {
+            _coeffs[i] = other._coeffs[i];
         }
     }
 
      Polynomial& operator=(const Polynomial& other) {
         if (this != &other) {
-            T* new_coeffs = new T[other.m_capacity];
-            for (size_t i = 0; i < other.m_capacity; ++i) {
-                new_coeffs[i] = other.m_coeffs[i];
+            T* new_coeffs = new T[other._capacity];
+            for (size_t i = 0; i < other._capacity; ++i) {
+                new_coeffs[i] = other._coeffs[i];
             }
-            delete[] m_coeffs;
-            m_coeffs = new_coeffs;
-            m_capacity = other.m_capacity;
+            delete[] _coeffs;
+            _coeffs = new_coeffs;
+            _capacity = other._capacity;
         }
         return *this;
     }
 
 
     Polynomial(Polynomial&& other) noexcept //перемещение
-        : m_coeffs(other.m_coeffs), m_capacity(other.m_capacity) {
-        other.m_coeffs = nullptr;
-        other.m_capacity = 0;
+        : _coeffs(other._coeffs), _capacity(other._capacity) {
+        other._coeffs = nullptr;
+        other._capacity = 0;
     }
 
     Polynomial& operator=(Polynomial&& other) noexcept {
         if (this != &other) {
-            delete[] m_coeffs;
-            m_coeffs = other.m_coeffs;
-            m_capacity = other.m_capacity;
-            other.m_coeffs = nullptr;
-            other.m_capacity = 0;
+            delete[] _coeffs;
+            _coeffs = other._coeffs;
+            _capacity = other._capacity;
+            other._coeffs = nullptr;
+            other._capacity = 0;
         }
         return *this;
     }
 
 
     T operator[](size_t power) const {
-        if (power >= m_capacity) {
+        if (power >= _capacity) {
             return T(0);
         }
-        return m_coeffs[power];
+        return _coeffs[power];
     }
 
 
@@ -114,22 +140,5 @@ class Polynomial{
    Polynomial operator* () {
     
    }
-
-   
-    Polynomial(std::size_t max_degree): coeffs(new  T[max_degree+1]()), capasity(max_degree+1) {}
-
-    void shrink_to_fit() {
-
-    } 
-
-    static T cast_size(std::size_t value) {
-        if constexpr(std::is_same_v<T, std::complex<float>>) {
-            return std::complex<float>(static_cast<float>(value), 0.0f);
-        }else if constexpr(std::is_same_v<T, std::complex<double>(value)) {
-            return std::complex<double>(static_cast<double>(value), 0.0f);
-        }else{
-            return static_cast<T>(value);
-        }
-    }
 
 };
