@@ -138,15 +138,36 @@ class Polynomial{
     }
 
 
-   Polynomial operator+ (const Polynomial& other) {
+   Polynomial operator+ (const Polynomial& other) const {
+        std::size_t max_capacity = std::max(_capacity, other._capacity);
+        std::size_t result_degree = max_capacity == 0 ? 0 : max_capasity - 1;
 
+        Polynomial result(result_degree);
+        for(std::size_t i = 0; i < max_capasity; ++i){
+            result.set(i, ((*this)[i] + other[i]));
+        }
+        result.shrink_to_fit();
+        return result;
    }
    Polynomial operator- (const Polynomial& other) {
+        std::size_t max_capacity = std::max(_capacity, other._capacity);
+        std::size_t result_degree = max_capacity == 0 ? 0 : max_capasity - 1;
 
+        Polynomial result(result_degree);
+        for(std::size_t i = 0; i < max_capasity; ++i){
+            result.set(i, ((*this)[i] - other[i]));
+        }
+        result.shrink_to_fit();
+        return result;
    }
    
-   Polynomial operator* (const Polynomial& other) {
-    
+   Polynomial operator* (const T& scalar) {
+        Polynomial result(*this);
+        for(std::size_t i = 0; i < result._capacity; ++i){
+            result._coeffs[i] = result._coeffs[i] * scalar;
+        }
+        result.shrink_to_fit();
+        return result;
    }
 
    bool operator!=(const Polynomial& other) const {
