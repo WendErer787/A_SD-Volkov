@@ -30,7 +30,7 @@ class Polynomial{
 
     public:
 
-    bool are_equal(const T& a, const T& b) const { //сравнялка коэффициентов
+    static bool are_equal(const T& a, const T& b){ //сравнялка коэффициентов
         if constexpr(std::is_integral_v<T>) {
             return a == b;
         } else{
@@ -42,7 +42,7 @@ class Polynomial{
         if(_capacity == 0) {
             return 0;
         }
-        for(std::size_t i = _capasity; i > 0; --i){
+        for(std::size_t i = _capacity; i > 0; --i){
             if(!are_equal(_coeffs[i - 1], T(0))){
                 return i - 1;
             }
@@ -51,23 +51,23 @@ class Polynomial{
     }
 
     void shrink_to_fit() { //
-        if(_capasity == 0){
+        if(_capacity == 0){
             delete[] _coeffs;
             _coeffs = new T[1];
-            _capasity = 1;
+            _capacity = 1;
             return;
         }
-        std::size_t new_capasity = get_degree + 1;
-        if (new_capasity == _capacity) { return; }
+        std::size_t new_capacity = get_degree() + 1;
+        if (new_capacity == _capacity) { return; }
 
-        T* new_coeffs = new T[new_capasity];
-        for (std::size_t i = 0; i < new_capasity; ++i){
+        T* new_coeffs = new T[new_capacity];
+        for (std::size_t i = 0; i < new_capacity; ++i){
             new_coeffs[i] = _coeffs[i];
         }
 
         delete[] _coeffs;
         _coeffs = new_coeffs;
-        _capacity = new_capasity;
+        _capacity = new_capacity;
     } 
 
         
@@ -75,30 +75,30 @@ class Polynomial{
         return T(static_cast<RealTypeT<T>>(value));
     }
 
-    explicit Polynomial(std::size_t max_degree) : _coeffs(new T(max_degree + 1)), _capasity(max_degree + 1) {}
+    explicit Polynomial(std::size_t max_degree) : _coeffs(new T[max_degree + 1]()), _capacity(max_degree + 1) {}
 
     Polynomial(const T* coeffs, std::size_t size) {
         if(size == 0){
             _coeffs = new T[1]();
-            _capasity = 1;
+            _capacity = 1;
         } else {
             if(coeffs == nullptr){
-                throw Std::invalid_argument("Coefficient array is null");
+                throw std::invalid_argument("Coefficient array is null");
             }
             _coeffs = new T[size];
-            _capasity = size;
-            for (int i = 0; i < size; ++i){
+            _capacity = size;
+            for (std::size_t i = 0; i < size; ++i){
                 _coeffs[i] = coeffs[i];
             }
         }
-        shrink_to_fit;
+        shrink_to_fit();
     }
 
     ~Polynomial() { delete[] _coeffs; }
 
 
     Polynomial(const Polynomial& other) //копирование
-        : m_coeffs(new T[other._capacity]), m_capacity(other._capacity) {
+        : _coeffs(new T[other._capacity]), _capacity(other._capacity) {
         for (size_t i = 0; i < _capacity; ++i) {
             _coeffs[i] = other._coeffs[i];
         }
@@ -146,28 +146,28 @@ class Polynomial{
 
    Polynomial operator+ (const Polynomial& other) const {
         std::size_t max_capacity = std::max(_capacity, other._capacity);
-        std::size_t result_degree = max_capacity == 0 ? 0 : max_capasity - 1;
+        std::size_t result_degree = max_capacity == 0 ? 0 : max_capacity - 1;
 
         Polynomial result(result_degree);
-        for(std::size_t i = 0; i < max_capasity; ++i){
+        for(std::size_t i = 0; i < max_capacity; ++i){
             result.set(i, ((*this)[i] + other[i]));
         }
         result.shrink_to_fit();
         return result;
    }
-   Polynomial operator- (const Polynomial& other) {
+   Polynomial operator- (const Polynomial& other) const {
         std::size_t max_capacity = std::max(_capacity, other._capacity);
-        std::size_t result_degree = max_capacity == 0 ? 0 : max_capasity - 1;
+        std::size_t result_degree = max_capacity == 0 ? 0 : max_capacity - 1;
 
         Polynomial result(result_degree);
-        for(std::size_t i = 0; i < max_capasity; ++i){
+        for(std::size_t i = 0; i < max_capacity; ++i){
             result.set(i, ((*this)[i] - other[i]));
         }
         result.shrink_to_fit();
         return result;
    }
    
-   Polynomial operator* (const T& scalar) {
+   Polynomial operator* (const T& scalar) const {
         Polynomial result(*this);
         for(std::size_t i = 0; i < result._capacity; ++i){
             result._coeffs[i] = result._coeffs[i] * scalar;
@@ -177,7 +177,7 @@ class Polynomial{
    }
 
    bool operator!=(const Polynomial& other) const {
-        return !(*this = other);
+        return !(*this == other);
    }
 
    bool operator==(const Polynomial& other) const {
@@ -191,7 +191,7 @@ class Polynomial{
    }
 
    friend std::ostream& operator<<(std::ostream& os, const Polynomial<T>& poly){
-        if(poly.get_degree() == 0 && are_equal(poly[o], T[0])){
+        if(poly.get_degree() == 0 && are_equal(poly[0], T(0))){
             os << "0";
             return os;
         }
@@ -200,7 +200,7 @@ class Polynomial{
         for(std::size_t i = degree + 1; i > 0; --i){
             std::size_t index = i - 1;
             T coeff = poly[index];
-            if(are_equal(coeff, T[0])) { continue; }
+            if(are_equal(coeff, T(0))) { continue; }
             if(!first) { os << "+"; }
             os << "(" << coeff << ")*x^" << index;
             first = false;
