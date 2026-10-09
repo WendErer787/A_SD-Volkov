@@ -44,7 +44,7 @@ class Polynomial{
         return 0;
     }
 
-    void shrink_to_fit() {
+    void shrink_to_fit() { //
         if(_capasity == 0){
             delete[] _coeffs;
             _coeffs = new T[1];
@@ -183,4 +183,25 @@ class Polynomial{
         }
         return true;
    }
+
+   friend std::ostream& operator<<(std::ostream& os, const Polynomial<T>& poly){
+        if(poly.get_degree() == 0 && are_equal(poly[o], T[0])){
+            os << "0";
+            return os;
+        }
+        bool first = true;
+        std::size_t degree = poly.get_degree();
+        for(std::size_t i = degree + 1; i > 0; --i){
+            std::size_t index = i - 1;
+            T coeff = poly[index];
+            if(are_equal(coeff, T[0])) { continue; }
+            if(!first) { os << "+"; }
+            os << "(" << coeff << ")*x^" << index;
+            first = false;
+        }
+        return os;
+    }
 };
+
+template <typename T>
+
