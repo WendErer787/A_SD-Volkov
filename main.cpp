@@ -4,7 +4,7 @@
 #include <iostream>
 #include <random>
 
-main () {
+int main () {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<double> dist(-10.0, 10.0);

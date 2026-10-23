@@ -201,7 +201,7 @@ class Polynomial{
             std::size_t index = i - 1;
             T coeff = poly[index];
             if(are_equal(coeff, T(0))) { continue; }
-            if(!first) { os << "+"; }
+            if(!first) { os << " + "; }
             os << "(" << coeff << ")*x^" << index;
             first = false;
         }
