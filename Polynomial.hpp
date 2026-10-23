@@ -30,7 +30,7 @@ class Polynomial{
 
     public:
 
-    static bool are_equal(const T& a, const T& b){ //сравнялка коэффициентов
+    static bool are_equal(const T& a, const T& b){
         if constexpr(std::is_integral_v<T>) {
             return a == b;
         } else{
@@ -38,7 +38,7 @@ class Polynomial{
         }
     }
 
-    std::size_t get_degree() const { //потск индекса старшего ненулевого члена
+    std::size_t get_degree() const {
         if(_capacity == 0) {
             return 0;
         }
@@ -50,7 +50,7 @@ class Polynomial{
         return 0;
     }
 
-    void shrink_to_fit() { //
+    void shrink_to_fit() {
         if(_capacity == 0){
             delete[] _coeffs;
             _coeffs = new T[1];
@@ -71,7 +71,7 @@ class Polynomial{
     } 
 
         
-    static T cast_size(std::size_t value) { //Т для сайз_т
+    static T cast_size(std::size_t value) { //из сайз_т в Т
         return T(static_cast<RealTypeT<T>>(value));
     }
 
@@ -94,6 +94,7 @@ class Polynomial{
         shrink_to_fit();
     }
 
+
     ~Polynomial() { delete[] _coeffs; }
 
 
@@ -104,7 +105,7 @@ class Polynomial{
         }
     }
 
-     Polynomial& operator=(const Polynomial& other) {
+    Polynomial& operator=(const Polynomial& other) {
         if (this != &other) {
             T* new_coeffs = new T[other._capacity];
             for (size_t i = 0; i < other._capacity; ++i) {
