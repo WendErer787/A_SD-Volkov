@@ -128,11 +128,60 @@ class LinkedList {
         return value;
     }
 
+    LinkedList& operator=(const LinkedList& other) {
+        if (this != &other) {
+            LinkedList copy(other); 
+
+            Node* tempHead = head;
+            head = copy.head;
+            copy.head = tempHead;
+
+            Node* tempTail = tail;
+            tail = copy.tail;
+            copy.tail = tempTail;
+
+            std::size_t tempSize = size;
+            size = copy.size;
+            copy.size = tempSize;
+        }
+        return *this;
+    }
+
+
+    void delete_node(const T& value) {
+        Node* current = head;
+        Node* previous = nullptr;
+
+        while (current != nullptr) {
+            if (current->value == value) {
+                Node* nodeToDelete = current;
+
+                if (previous == nullptr) {
+                    head = current->next;
+                } else {
+                    previous->next = current->next;
+                }
+
+                if (current == tail) {
+                    tail = previous;
+                }
+
+                current = current->next;
+                delete nodeToDelete;
+                --size;
+            } else {
+                previous = current;
+                current = current->next;
+            }
+        }
+    }
+
+
     bool empty() const noexcept {
         return size == 0;
     }
 
     std::size_t size() const noexcept {
-       return size_;
+       return size;
     }
 };
