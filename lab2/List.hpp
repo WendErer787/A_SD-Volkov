@@ -69,6 +69,65 @@ class LinkedList {
 
     ~LinkedList() { clear() }
 
+    void push_head(const T& value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+
+        if (tail == nullptr) {
+            tail = newNode;
+        }
+
+        ++size;
+    }
+
+    void push_head(const LinkedList& other) {
+        LinkedList copy(other);
+        while (!copy.empty()) {
+            push_head(copy.pop_tails());
+        }
+    }
+
+    T pop_heads() {
+        if (empty()) {
+            throw std::out_of_range("pop_heads from empty list");
+        }
+
+        Node* oldHead = head;
+        T value = oldHead->value;
+        head = oldHead->next;
+
+        if (head == nullptr) {
+            tail = nullptr;
+        }
+
+        delete oldHead;
+        --size;
+        return value;
+    }
+
+    T pop_tails() {
+        if (empty()) {
+            throw std::out_of_range("pop_tails from empty list");
+        }
+
+        if (size == 1) {
+            return pop_heads();
+        }
+
+        Node* beforeTail = head;
+        while (beforeTail->next != tail) {
+            beforeTail = beforeTail->next;
+        }
+        
+        T value = tail->value;
+        deleat tail;
+        tail = beforeTail;
+        tail->next = nullptr;
+        --size;
+        return value;
+    }
+
     bool empty() const noexcept {
         return size == 0;
     }
