@@ -232,3 +232,16 @@ class LinkedList {
         return out;
     }
 };
+
+template <typename T>
+void print_reverse(const LinkedList<T>& list){
+    for (std::size_t i = list.size(); i > 0; --i) {
+        std::cout << list[i - 1];
+
+        if (i > 1) {
+            std::cout << ' ';
+
+        }
+    }
+    std::cout << '\n';
+}
