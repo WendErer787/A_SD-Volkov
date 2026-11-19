@@ -7,6 +7,9 @@ int main () {
         std::cout << "Reverse: ";
         print_reverse(list);
 
+        int a = list[6];
+        std::cout << "Element 6th: " << a << '\n';
+
         list.push_head(0);
         list.push_tail(101);
         list.delete_node(50);
@@ -22,6 +25,10 @@ int main () {
         list.pop_tails();
 
         std::cout << "After pop: " << list << '\n';
+
+        other = list;
+        std::cout << "Other: " << other << '\n';
+
     } catch(const std::exception& error) {
         std::cout << "Error: " << error.what() << '\n';
         return 1;
